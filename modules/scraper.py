@@ -28,7 +28,7 @@ class Scraper:
         # 'audios-' len = 7
         # '_1.html' len = 7
         url = url[7:-7]
-        f_pos = url.find('f')
+        f_pos = url.rfind('f')
         id = url[f_pos+1:]
         underscore_pos = url.find('_')
         slug = url[0:underscore_pos]
@@ -74,7 +74,7 @@ class Scraper:
 
     def get_subcategories(self, category):
 
-        print(category['name'])
+        print('[{id}] {name}'.format(**category))
 
         url = self.base_path + '/' + category['url']
         content = Utils().get_url_content(url)
@@ -93,11 +93,12 @@ class Scraper:
 
     def get_categories(self):
 
-        #content = Utils().get_url_content(self.url)
-        #Storage.save_pickle('storage/content.pkl', content)
-        saved_content = Storage.load_pickle('storage/content.pkl')
+        content = Utils().get_url_content(self.url)
 
-        soup = self.__get_soup(saved_content)
+        #Storage.save_pickle('storage/content.pkl', content)
+        #content = Storage.load_pickle('storage/content.pkl')
+
+        soup = self.__get_soup(content)
 
         pattern = 'body > div[id=main] div.fill_menu_filters div.pills-container div.container ul'
         category_html_block = soup.select(pattern)[0]

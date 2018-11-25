@@ -7,13 +7,14 @@ from modules.scraper import Scraper
 from modules.storage import Storage
 
 
+
 url = 'https://www.ivoox.com/audios_sa_f_1.html'
 scraper = Scraper(url)
 
-scraper.print_url()
 categories = scraper.get_categories()
 
-
+df = pd.DataFrame(categories)
+Storage.save_csv('storage/categories.csv', df)
 
 def scrap():
     with ProcessPoolExecutor(max_workers=8) as executor:
@@ -22,10 +23,6 @@ def scrap():
         for completed_futures in as_completed(futures):
             category_subcategories.extend(completed_futures.result())
     return category_subcategories
-
-#for category in categories:
-#    category_subcategories = scraper.get_subcategories(category)
-#    subcategories.append(category_subcategories)
 
 subcategories = scrap()
 
