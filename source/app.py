@@ -1,20 +1,25 @@
-import time
+import logging
 
 from concurrent.futures import ProcessPoolExecutor, as_completed
 import pandas as pd
 
 from modules.scraper import Scraper
 from modules.storage import Storage
+from modules.setup import setup
 
 
+
+setup()
+logger = logging.getLogger('infoLogger')
+logger.info('Initialize app')
 
 url = 'https://www.ivoox.com/audios_sa_f_1.html'
 scraper = Scraper(url)
 
 categories = scraper.get_categories()
 
-df = pd.DataFrame(categories)
-Storage.save_csv('storage/categories.csv', df)
+#df = pd.DataFrame(categories)
+#Storage.save_csv('storage/categories.csv', df)
 
 def scrap():
     with ProcessPoolExecutor(max_workers=8) as executor:
@@ -28,3 +33,5 @@ subcategories = scrap()
 
 df = pd.DataFrame(subcategories)
 Storage.save_csv('storage/subcategories.csv', df)
+
+logger.info('Finalize app')

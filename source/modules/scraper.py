@@ -1,3 +1,5 @@
+import logging
+
 from bs4 import BeautifulSoup
 
 from modules.utils import Utils
@@ -74,7 +76,9 @@ class Scraper:
 
     def get_subcategories(self, category):
 
-        print('[{id}] {name}'.format(**category))
+        logger = logging.getLogger('infoLogger')
+        log_msg = '[{id}] {name}'.format(**category)
+        logger.info(log_msg)
 
         url = self.base_path + '/' + category['url']
         content = Utils().get_url_content(url)
@@ -88,15 +92,20 @@ class Scraper:
 
         categories = self.__get_subcategories_from_links(items, category['id'])
 
+        log_msg = 'Done [{id}] {name}'.format(**category)
+        logger.info(log_msg)
+
         return categories
 
 
     def get_categories(self):
 
-        content = Utils().get_url_content(self.url)
+        #self.logger.info('Get categories')
+
+        #content = Utils(self.logger).get_url_content(self.url)
 
         #Storage.save_pickle('storage/content.pkl', content)
-        #content = Storage.load_pickle('storage/content.pkl')
+        content = Storage.load_pickle('storage/content.pkl')
 
         soup = self.__get_soup(content)
 
